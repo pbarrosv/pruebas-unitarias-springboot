@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 public class EmpleadoRepositoryTests {
@@ -96,5 +97,17 @@ public class EmpleadoRepositoryTests {
         assertThat(empleadoActtualizado.getEmail()).isEqualTo("zxc@gmail.com");
         assertThat(empleadoActtualizado.getNombre()).isEqualTo("Micho");
 
+    }
+    @DisplayName("Test para eliminar un empleado")
+    @Test
+    void testEliminarEmpleado(){
+        empleadosRepository.save(empleado);
+
+        //when
+        empleadosRepository.deleteById(empleado.getId());
+        Optional<Empleado> empleadorOpctional = empleadosRepository.findById(empleado.getId());
+
+        //then
+        assertThat(empleadorOpctional).isEmpty();
     }
 }
