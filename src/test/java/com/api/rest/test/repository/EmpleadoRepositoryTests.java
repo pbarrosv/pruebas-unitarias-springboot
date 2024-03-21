@@ -40,7 +40,7 @@ public class EmpleadoRepositoryTests {
                 .email("pedro@gmail.com")
                 .build();
         /* when - accion o el comportamiento que vamos a probar */
-        Empleado empleadoGuardado = (Empleado) empleadosRepository.save(empleado1);
+        Empleado empleadoGuardado = empleadosRepository.save(empleado1);
 
         /* then - verificar la salida */
         assertThat(empleadoGuardado).isNotNull();
@@ -65,5 +65,36 @@ public class EmpleadoRepositoryTests {
         //then
         assertThat(listarEmpleados).isNotNull();
         assertThat(listarEmpleados.size()).isEqualTo(2);
+    }
+
+    @DisplayName("Test para obtener un empleado por ID")
+    @Test
+    void testObtenerEmpleadoPorId(){
+        empleadosRepository.save(empleado);
+
+        //when
+        Empleado empleadoBD = empleadosRepository.findById(empleado.getId()).get();
+
+        //then
+        assertThat(empleadoBD).isNotNull();
+
+    }
+    @DisplayName("Test para actualizar un empleado")
+    @Test
+    void testActualizarEmpleado(){
+        empleadosRepository.save(empleado);
+
+        //when
+        Empleado empleadoGuardado = empleadosRepository.findById(empleado.getId()).get();
+        empleadoGuardado.setEmail("zxc@gmail.com");
+        empleadoGuardado.setNombre("Micho");
+        empleadoGuardado.setApellido("Ramirez");
+
+        Empleado empleadoActtualizado = empleadosRepository.save(empleadoGuardado);
+
+        //then
+        assertThat(empleadoActtualizado.getEmail()).isEqualTo("zxc@gmail.com");
+        assertThat(empleadoActtualizado.getNombre()).isEqualTo("Micho");
+
     }
 }
