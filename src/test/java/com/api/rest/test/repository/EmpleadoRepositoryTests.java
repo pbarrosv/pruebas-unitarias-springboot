@@ -2,10 +2,14 @@ package com.api.rest.test.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import com.api.rest.test.models.Empleado;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 @DataJpaTest
 public class EmpleadoRepositoryTests {
@@ -13,6 +17,19 @@ public class EmpleadoRepositoryTests {
     @Autowired
     private EmpleadosRepository empleadosRepository;
 
+    Empleado empleado;
+
+    /*Se ejecuta antes de cada metodo "@BeforeEach" */
+    @BeforeEach
+    void setup(){
+        empleado = Empleado.builder()
+                .nombre("Katherine")
+                .apellido("Morales")
+                .email("Katy@gmail.com")
+                .build();
+    }
+
+    @DisplayName("Test para guardar un empleado")/*Sirve cuando se tiene muchos metodos*/
     @Test
     void testGuardarEmpleado(){
         /* BDD Behavior Driven Development */
@@ -30,4 +47,23 @@ public class EmpleadoRepositoryTests {
         assertThat(empleadoGuardado.getId()).isGreaterThan(0);
     }
 
+    @DisplayName("Test para listar empleados")/*Sirve cuando se tiene muchos metodos*/
+    @Test
+    void testListarEmpleados(){
+        //given
+        Empleado empleado1 = Empleado.builder()
+                .nombre("Luis")
+                .apellido("Valle")
+                .email("luis@gmail.com")
+                .build();
+        empleadosRepository.save(empleado1);
+        empleadosRepository.save(empleado);
+
+        //when (es lo que se va probar)
+        List<Empleado> listarEmpleados = empleadosRepository.findAll();
+
+        //then
+        assertThat(listarEmpleados).isNotNull();
+        assertThat(listarEmpleados.size()).isEqualTo(2);
+    }
 }
