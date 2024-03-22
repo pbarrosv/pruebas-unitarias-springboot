@@ -23,7 +23,7 @@ public class Empleado {
     @Column(name = "apellido",nullable = false)
     private String apellido;
 
-    @Column(name = "nombemailre",nullable = false)
+    @Column(name = "email",nullable = false)
     private String email;
 
 }

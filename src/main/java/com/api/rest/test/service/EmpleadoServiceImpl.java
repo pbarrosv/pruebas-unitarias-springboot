@@ -19,7 +19,7 @@ public class EmpleadoServiceImpl implements EmpleadoService{
         if (empleadoGuardado.isPresent()){
             throw new ResourceNotFoundException("El empleado con ese email ya existe : " + empleado.getEmail());
         }
-        return (Empleado)empleadosRepository.save(empleado);
+        return empleadosRepository.save(empleado);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 
     @Override
     public Empleado updateEmpleado(Empleado empleadoActualizado) {
-        return (Empleado) empleadosRepository.save(empleadoActualizado);
+        return empleadosRepository.save(empleadoActualizado);
     }
 
     @Override
