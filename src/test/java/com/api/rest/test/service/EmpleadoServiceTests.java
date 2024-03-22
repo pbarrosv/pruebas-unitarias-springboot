@@ -1,10 +1,9 @@
 package com.api.rest.test.service;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.never;
-import static org.mockito.BDDMockito.any;
+import static javax.management.Query.times;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.verify;
 
 import com.api.rest.test.exception.ResourceNotFoundException;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -36,6 +36,7 @@ public class EmpleadoServiceTests {
     @BeforeEach
     void setup(){
         empleado = Empleado.builder()
+                .id(1L)
                 .nombre("Katherine")
                 .apellido("Morales")
                 .email("Katy@gmail.com")
@@ -117,5 +118,39 @@ public class EmpleadoServiceTests {
         assertThat(listaEmpleados.size()).isEqualTo(0);
     }
 
-    
+    @DisplayName("Test para obtener empleado por ID")
+    @Test
+    void testObtenerPorId(){
+        given(empleadosRepository.findById(1L)).willReturn(Optional.of(empleado));
+
+        Empleado empleadoGuardado = empleadoService.getEmpleadoById(empleado.getId()).get();
+
+        assertThat(empleadoGuardado).isNotNull();
+    }
+
+    @DisplayName("Test para actualizar empleado")
+    @Test
+    void testActualizarEmpleado(){
+        given(empleadosRepository.save(empleado)).willReturn(empleado);
+        empleado.setNombre("Carlos");
+        empleado.setApellido("coacc");
+
+        Empleado empleadoActualizado = empleadoService.updateEmpleado(empleado);
+
+        assertThat(empleadoActualizado.getNombre()).isEqualTo("Carlos");
+        assertThat(empleadoActualizado.getApellido()).isEqualTo("coacc");
+    }
+
+    @DisplayName("Test para eliminar un empleado")
+    @Test
+    void testEliminarEmpleado(){
+
+        long empleadoId = 1L;
+        willDoNothing().given(empleadosRepository).deleteById(empleadoId);
+
+        empleadoService.deleteEmpleado(empleadoId);
+
+        /*times es para que se aya ejecutado 1 vez; eliminacion del empleado*/
+        verify(empleadosRepository, Mockito.times(1)).deleteById(empleadoId);
+    }
 }
