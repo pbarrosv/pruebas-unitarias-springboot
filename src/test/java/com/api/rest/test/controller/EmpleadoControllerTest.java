@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,5 +89,46 @@ public class EmpleadoControllerTest {
         response.andExpect(status().isOk())  /*Es tado sea OK*/
                 .andDo(print()) /*que me imprima*/
                 .andExpect(jsonPath("$.size()",is(ListaEmpleados.size()))); /*Que el tamaño sea igual al retorno*/
+    }
+
+    @Test
+    void testObtenerEmpleadoPorId() throws Exception {
+        //given
+        long empleadoId = 1L;
+        Empleado empl = Empleado.builder()
+                .nombre("Katherine")
+                .apellido("Morales")
+                .email("Katy@gmail.com")
+                .build();
+        given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.of(empl));
+
+        //when
+        ResultActions response = mockMvc.perform(get("/api/empleados/{id}",empleadoId));
+
+        //Then
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.nombre",is(empl.getNombre())))
+                .andExpect(jsonPath("$.apellido",is(empl.getNombre())))
+                .andExpect(jsonPath("$.email",is(empl.getNombre())));
+    }
+
+    @Test
+    void testObtenerEmpleadoPorIdNoEncontrado() throws Exception {
+        //given
+        long empleadoId = 1L;
+        Empleado empl = Empleado.builder()
+                .nombre("Katherine")
+                .apellido("Morales")
+                .email("Katy@gmail.com")
+                .build();
+        given(empleadoService.getEmpleadoById(empleadoId)).willReturn(Optional.empty());
+
+        //when
+        ResultActions response = mockMvc.perform(get("/api/empleados/{id}",empleadoId));
+
+        //Then
+        response.andExpect(status().isNotFound())
+                .andDo(print());
     }
 }
