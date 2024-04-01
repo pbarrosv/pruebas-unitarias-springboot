@@ -111,8 +111,8 @@ public class EmpleadoControllerTest {
         response.andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.nombre",is(empl.getNombre())))
-                .andExpect(jsonPath("$.apellido",is(empl.getNombre())))
-                .andExpect(jsonPath("$.email",is(empl.getNombre())));
+                .andExpect(jsonPath("$.apellido",is(empl.getApellido())))
+                .andExpect(jsonPath("$.email",is(empl.getEmail())));
     }
 
     @Test
@@ -131,6 +131,20 @@ public class EmpleadoControllerTest {
 
         //Then
         response.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    void testEliminarEmpleado() throws Exception{
+        //given
+        long empleadoId = 1L;
+        willDoNothing().given(empleadoService).deleteEmpleado(empleadoId);
+
+        //when
+        ResultActions response = mockMvc.perform(delete("/api/empleados/{id}",empleadoId));
+
+        //then
+        response.andExpect(status().isOk())
                 .andDo(print());
     }
 }
