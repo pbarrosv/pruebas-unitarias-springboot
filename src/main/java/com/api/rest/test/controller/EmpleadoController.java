@@ -47,7 +47,7 @@ public class EmpleadoController {
                 }).orElseGet(()-> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarEmpleado(@PathVariable("id") long empleadoId){
         empleadoService.deleteEmpleado(empleadoId);
         return new ResponseEntity<String>("Empleado eliminado Exitosamente",HttpStatus.OK);
