@@ -9,7 +9,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,5 +36,30 @@ public class EmpleadoControllerRestTemplateTest {
                 .build();
         /*Vamos poner al empl y le vamos a poner de que tipo es Empleado.class*/
         ResponseEntity<Empleado> respuesta = testRestTemplate.postForEntity("http://localhost:8080/api/empleados",empl,Empleado.class);
+        assertEquals(HttpStatus.CREATED,respuesta.getStatusCode());
+        assertEquals(MediaType.APPLICATION_JSON,respuesta.getHeaders().getContentType());
+
+        Empleado empleadoCreado = respuesta.getBody();
+
+        assertEquals(1L,empleadoCreado.getId());
+        assertEquals("Pedro",empleadoCreado.getNombre());
+        assertEquals("Barros",empleadoCreado.getApellido());
+        assertEquals("pbarros@gmail.com",empleadoCreado.getEmail());
+    }
+
+    @Test
+    @Order(2)
+    void testListarEmpleado(){
+        ResponseEntity<Empleado[]> respuesta = testRestTemplate.getForEntity("http://localhost:8080/api/empleados/listaEm",Empleado[].class);
+        List<Empleado> empleados = Arrays.asList(respuesta.getBody());
+
+        assertEquals(HttpStatus.OK,respuesta.getStatusCode());
+        assertEquals(MediaType.APPLICATION_JSON,respuesta.getHeaders().getContentType());
+
+        assertEquals(1,empleados.size());
+        assertEquals(1L,empleados.get(0).getId());
+        assertEquals("Pedro",empleados.get(0).getNombre());
+        assertEquals("Barros",empleados.get(0).getApellido());
+        assertEquals("pbarros@gmail.com",empleados.get(0).getEmail());
     }
 }
