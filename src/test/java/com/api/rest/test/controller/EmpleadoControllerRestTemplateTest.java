@@ -62,4 +62,20 @@ public class EmpleadoControllerRestTemplateTest {
         assertEquals("Barros",empleados.get(0).getApellido());
         assertEquals("pbarros@gmail.com",empleados.get(0).getEmail());
     }
+
+    @Test
+    @Order(3)
+    void testObtenerEmpleado(){
+        ResponseEntity<Empleado> respuesta = testRestTemplate.getForEntity( "http://localhost:8080/api/empleados/1", Empleado.class);
+        Empleado empleado = respuesta.getBody();
+
+        assertEquals(HttpStatus.OK,respuesta.getStatusCode());
+        assertEquals(MediaType.APPLICATION_JSON, respuesta.getHeaders().getContentType());
+
+        assertNotNull(empleado);
+        assertEquals( 1L, empleado.getId());
+        assertEquals( "Pedro", empleado.getNombre());
+        assertEquals( "Barros", empleado.getApellido());
+        assertEquals( "pbarros@gmail.com", empleado.getEmail());
+    }
 }
